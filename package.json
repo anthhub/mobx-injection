@@ -1,6 +1,6 @@
 {
   "name": "mobx-injection",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "",
   "keywords": [],
   "main": "dist/mobx-injection.umd.js",
