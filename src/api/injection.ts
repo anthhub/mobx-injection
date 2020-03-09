@@ -1,12 +1,16 @@
 import 'reflect-metadata'
 
-import { getInjector } from '../instantiate'
-import { Constructor, storeScopeTypeSymbol, storesQueueSymbol } from '../meta'
-import { Scope } from '../Injector'
+import { getInjector } from '../core/instantiate'
+import { Constructor, storeScopeTypeSymbol, storesQueueSymbol, PlainObject } from '../core/meta'
+import { Scope } from '../core/Injector'
 
-import { getHashedName, isFunction, flatten } from '../../utils'
+import { getClassHashName } from '../utils'
+const injector = getInjector()
 
-export default <T>(InjectedStoreClass?: Constructor<T>, ...args: any[]): any =>
+export default <T>(
+  InjectedStoreClass: Constructor<T>,
+  arg: ((props: any) => PlainObject) | PlainObject = {}
+): any =>
   function(this: any, target: any, property: string) {
     if (!InjectedStoreClass) {
       InjectedStoreClass = Reflect.getMetadata('design:type', target, property)
@@ -19,31 +23,22 @@ export default <T>(InjectedStoreClass?: Constructor<T>, ...args: any[]): any =>
       }
     }
 
-    let constructorParams = args
+    let constructorParam = arg
 
-    // if the first argument is a function, we can initialize it with the invoker instance `this`
-    if (isFunction(args[0])) {
-      constructorParams = flatten([args[0].call(this, this)])
+    if (typeof arg === 'function') {
+      constructorParam = arg(this)
     }
 
     const propertySymbol = Symbol(property)
-
-    const injector = getInjector()
-
     const scope: Scope = (InjectedStoreClass as any)[storeScopeTypeSymbol] || 'application'
-
-    const name = getHashedName(InjectedStoreClass.toString())
+    const name = getClassHashName(InjectedStoreClass.toString())
 
     return {
       enumerable: true,
       configurable: true,
       get(this: any) {
         if (!this[propertySymbol]) {
-          const store = injector.get(
-            InjectedStoreClass as any,
-            { scope, name },
-            ...constructorParams
-          )
+          const store = injector.get(InjectedStoreClass, name, constructorParam)
           this[propertySymbol] = store
           // 加入到组件队列中
 

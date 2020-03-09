@@ -1,8 +1,8 @@
 import React from 'react'
-import { storesQueueSymbol } from '../meta'
+import { storesQueueSymbol } from '../core/meta'
 
-import { getInjector, hasUsedMap } from '../instantiate'
-import { isFunction } from '../../utils'
+import { getInjector, hasUsedMap } from '../core/instantiate'
+import { isFunction } from '../utils'
 
 const injector = getInjector()
 

@@ -15,7 +15,7 @@ export const hashCode = (str: string) => {
   return hash
 }
 
-export const getHashedName = (classStr: string) => {
+export const getClassHashName = (classStr: string) => {
   const hash = hashCode(classStr)
 
   const [, name1] = classStr.match(/class\s*(\w*)\s*{/) || []
