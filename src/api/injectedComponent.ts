@@ -5,10 +5,6 @@ import { storeCreaterMap } from '../core/Injector'
 
 export default <T extends new (...args: any[]) => React.Component>(WrappedComponent: T) => {
   return class extends WrappedComponent {
-    constructor(...props: any[]) {
-      super(...props)
-    }
-
     componentWillUnmount() {
       if (super.componentWillUnmount) {
         super.componentWillUnmount()

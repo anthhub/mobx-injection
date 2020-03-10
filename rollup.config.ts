@@ -12,33 +12,41 @@ const libraryName = 'mobx-injection'
 
 export default {
   input: `src/index.ts`,
-  output: [
-    { file: pkg.main, name: camelCase(libraryName), format: 'umd', sourcemap: true },
-    { file: pkg.module, format: 'es', sourcemap: true },
-  ],
+  output: {
+    file: pkg.main,
+    name: camelCase(libraryName),
+    format: 'umd',
+    sourcemap: true,
+    globals: {
+      react: 'React',
+      'react-dom': 'ReactDOM'
+    }
+  },
+
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: ['react'], 
+  external: ['react','react-dom'],
   watch: {
-    include: 'src/**',
+    include: 'src/**'
   },
   plugins: [
     // Allow json resolution
     json(),
     // Compile TypeScript files
     typescript({ useTsconfigDeclarationDir: true }),
+
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs(),
-
-    babel({
-      exclude: 'node_modules/**' // 只编译我们的源代码
-    }),
 
     // Allow node_modules resolution, so you can use 'external' to control
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
     resolve(),
 
+    babel({
+      exclude: 'node_modules/**' // 只编译我们的源代码
+    }),
+
     // Resolve source maps to the original source
-    sourceMaps(),
-  ],
+    sourceMaps()
+  ]
 }
