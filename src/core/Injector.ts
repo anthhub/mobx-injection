@@ -7,45 +7,59 @@ export type InjectionOptions = {
   scope: Scope
 }
 
-export type Entry<K, V> = {
-  k: K
-  v: V
-  e?: number
+// store 创建者占位map
+export const storeCreaterMap = new WeakMap()
+
+let cachedInjector: Injector
+
+export function getInjector() {
+  return cachedInjector || (cachedInjector = Injector.newInstance())
 }
 
-export default class Injector {
-  private readonly container: Map<string, any>
+class Injector {
+  private readonly container: WeakMap<any, any>
 
-  private constructor(container?: Map<string, any>) {
-    this.container = container || new Map<string, any>()
+  private constructor(container?: WeakMap<any, any>) {
+    this.container = container || new WeakMap()
   }
 
-  static newInstance(container?: Map<string, any>) {
+  static newInstance(container?: WeakMap<any, any>) {
     return new Injector(container)
   }
 
-  _getContainer() {
-    return this.container
-  }
-
-  del(name: string) {
-    const { container } = this
-    container.delete(name)
-  }
-
-  get<T>(InjectedStoreClass: Constructor<T>, name: string, arg: PlainObject = {}): T {
-    const { container } = this
-
+  get<T>(
+    InjectedStoreClass: Constructor<T>,
+    scope: Scope = 'application',
+    arg: PlainObject = {}
+  ): T {
     let instance: any
 
-    instance = container.get(name)
-    if (!instance) {
-      instance = new InjectedStoreClass(arg)
-      Object.keys(arg).forEach((key: string) => {
-        instance[key] = arg[key]
-      })
-      container.set(name, instance)
+    switch (scope) {
+      case 'application':
+        instance = this.container.get(InjectedStoreClass)
+        if (!instance) {
+          instance = new InjectedStoreClass(arg)
+          Object.keys(arg).forEach((key: string) => {
+            instance[key] = arg[key]
+          })
+          this.container.set(InjectedStoreClass, instance)
+        }
+        break
+
+      case 'session':
+        const comp = storeCreaterMap.get(InjectedStoreClass)
+
+        instance = this.container.get(comp)
+        if (!instance) {
+          instance = new InjectedStoreClass(arg)
+          Object.keys(arg).forEach((key: string) => {
+            instance[key] = arg[key]
+          })
+          this.container.set(comp, instance)
+        }
+        break
     }
+
     return instance
   }
 }

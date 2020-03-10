@@ -3,4 +3,4 @@ import useInjection from './api/useInjection'
 import store from './api/store'
 import injectedComponent from './api/injectedComponent'
 
-export { injection, useInjection, store, injectedComponent }
+export { useInjection, store, injectedComponent, injection }

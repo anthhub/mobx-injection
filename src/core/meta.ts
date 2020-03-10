@@ -1,4 +1,4 @@
-export const storeSymbol = Symbol('Store')
+export const storeSymbol = Symbol('store')
 export const storeScopeTypeSymbol = Symbol('storeScopeType')
 export const storesQueueSymbol = Symbol('storesQueue')
 

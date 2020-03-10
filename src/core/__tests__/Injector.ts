@@ -1,26 +1,37 @@
-import Injector from '../Injector'
-import { PlainObject } from '../meta'
+import { getInjector, storeCreaterMap } from '../Injector'
 
 describe('Injector', () => {
-  const injector = Injector.newInstance()
+  const injector = getInjector()
 
   class Clazz {
     count = 1
   }
 
-  test('the application scope store should be singleton', () => {
-    const clazz1 = injector.get(Clazz, 'Clazz')
-    const clazz2 = injector.get(Clazz, 'Clazz')
-    expect(clazz1).toEqual(clazz2)
-  })
+  class Klazz {
+    name = 'Jack'
+  }
 
   test('the initial parameters should works and just works once', () => {
-    const clazz = new Clazz()
-    expect(clazz.count).toBe(1)
+    expect(new Clazz().count).toBe(1)
+    expect(injector.get(Clazz, 'application', { count: 100 }).count).toBe(100)
+    expect(injector.get(Clazz, 'application', { count: 0 }).count).toBe(100)
 
-    const clazz1 = injector.get(Clazz, 'Clazz', { count: 100 })
-    expect(clazz1.count).toBe(100)
-    const clazz2 = injector.get(Clazz, 'Clazz', { count: 0 })
-    expect(clazz2.count).toBe(100)
+    let ref: any = {}
+    storeCreaterMap.set(Klazz, ref)
+    expect(new Klazz().name).toBe('Jack')
+    expect(injector.get(Klazz, 'session', { name: 'Jerrey' }).name).toBe('Jerrey')
+    expect(injector.get(Klazz, 'session', { name: 'Joker' }).name).toBe('Jerrey')
+  })
+
+  test('the application scope store should be a singleton', () => {
+    expect(injector.get(Clazz)).toEqual(injector.get(Clazz))
+  })
+
+  test('the session scope store should be a singleton only when ref is destroyed', () => {
+    let ref: any = {}
+    storeCreaterMap.set(Clazz, ref)
+    expect(injector.get(Clazz, 'session')).toEqual(injector.get(Clazz, 'session'))
+    storeCreaterMap.delete(Clazz)
+    ref = null
   })
 })
