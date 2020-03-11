@@ -10,12 +10,22 @@ export default <T>(
   args: ((props: any) => PlainObject) | PlainObject = {}
 ): any =>
   function(this: any, target: any, property: string) {
+    const selfScope = target[storeScopeTypeSymbol]
+
+    if (selfScope && selfScope === 'session') {
+      throw Error(`session store forbid to be inject into session store!`)
+    }
+
     if (!InjectedStoreClass) {
       InjectedStoreClass = Reflect.getMetadata('design:type', target, property)
     }
 
     // tslint:disable-next-line: no-unnecessary-type-assertion
-    const clazz = InjectedStoreClass as Constructor<T>
+    const clazz = InjectedStoreClass as any
+
+    if (target instanceof clazz) {
+      throw Error(`injection decorator can't be use to self!`)
+    }
 
     const propertySymbol = Symbol(property)
     const scope: Scope = (InjectedStoreClass as any)[storeScopeTypeSymbol]
