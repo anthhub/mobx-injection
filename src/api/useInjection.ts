@@ -15,11 +15,11 @@ export default <T>(
 
   const scope: Scope = (InjectedStoreClass as any)[storeScopeTypeSymbol]
 
-  const store = useMemo(() => {
-    if (!storeCreaterMap.get(InjectedStoreClass)) {
-      storeCreaterMap.set(InjectedStoreClass, selfRef.current)
-    }
+  if (!storeCreaterMap.get(InjectedStoreClass)) {
+    storeCreaterMap.set(InjectedStoreClass, selfRef.current)
+  }
 
+  const store = useMemo(() => {
     let params = args
     if (typeof args === 'function') {
       params = args()
