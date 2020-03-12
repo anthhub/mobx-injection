@@ -1,1 +1,5 @@
-export { withRouter as plusRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
+
+const plusRouter: any = withRouter
+
+export default plusRouter

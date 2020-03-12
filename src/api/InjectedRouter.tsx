@@ -4,7 +4,11 @@ import { getInjector } from '../core/Injector'
 
 export let prePath = ''
 
-const InjectedRouter: React.FC = (props: any) => {
+interface IP {
+  children?: any
+}
+
+const InjectedRouter: React.FC<IP> = props => {
   const { pathname = '' } = useLocation() || {}
 
   if (prePath !== pathname) {
