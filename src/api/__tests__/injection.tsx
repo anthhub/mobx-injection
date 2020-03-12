@@ -1,9 +1,9 @@
 import injection from '../injection'
-import injectedComponent from '../injectedComponent'
-import store from '../store'
+
 import * as React from 'react'
 import '@testing-library/jest-dom'
 import { render, act } from '@testing-library/react'
+import { store } from '../..'
 class CounterStoreType {
   counter = 0
   increment = () => {
@@ -37,7 +37,7 @@ describe('injection and injectedComponent', () => {
   })
 
   it('store parameters should just works once', () => {
-    @injectedComponent
+    
     class Child extends React.Component {
       @injection(StoreSession, { counter: -1 })
       StoreSession!: CounterStoreType
@@ -59,7 +59,7 @@ describe('injection and injectedComponent', () => {
     }
 
     const compRef1 = React.createRef<any>()
-    @injectedComponent
+    
     class Comp extends React.Component {
       @injection(StoreSession, { counter: 1 })
       StoreSession!: CounterStoreType
@@ -90,7 +90,7 @@ describe('injection and injectedComponent', () => {
   })
 
   it('function store parameters should works', () => {
-    @injectedComponent
+    
     class Comp extends React.Component {
       some = -1000
 
@@ -135,7 +135,7 @@ describe('injection and injectedComponent', () => {
       }
     }
 
-    @injectedComponent
+    
     class Comp extends React.Component {
       some = -1000
 

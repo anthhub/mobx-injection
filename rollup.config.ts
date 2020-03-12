@@ -19,12 +19,13 @@ export default {
     sourcemap: true,
     globals: {
       react: 'React',
-      'react-dom': 'ReactDOM'
+      'react-dom': 'ReactDOM',
+      'react-router-dom': 'ReactRouterDOM'
     }
   },
 
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: ['react','react-dom'],
+  external: ['react','react-dom','react-router-dom'],
   watch: {
     include: 'src/**'
   },

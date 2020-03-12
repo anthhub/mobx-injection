@@ -1,5 +1,5 @@
-import store from '../store'
 import { storeScopeTypeSymbol } from '../../core/meta'
+import { store } from '../..'
 
 describe('store decorator', () => {
   test('the store class decorated should have a static storeScopeTypeSymbol property', () => {

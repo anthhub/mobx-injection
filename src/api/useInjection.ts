@@ -1,41 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { Constructor, PlainObject, storeScopeTypeSymbol } from '../core/meta'
-import { useRef, useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 
-import { Scope, storeCreaterMap, getInjector } from '../core/Injector'
+import { Scope, getInjector } from '../core/Injector'
+import { useLocation } from 'react-router-dom'
 
-const injector = getInjector()
-
-export default <T>(
+const useInjection = <T>(
   InjectedStoreClass: Constructor<T>,
   args: (() => PlainObject) | PlainObject = {}
 ) => {
-  const selfRef = useRef<any>({ timestamp: Date.now() })
-
   const scope: Scope = (InjectedStoreClass as any)[storeScopeTypeSymbol]
 
-  let params = args
+  const { pathname = '' } = useLocation() || {}
 
-  if (!storeCreaterMap.get(InjectedStoreClass)) {
-    storeCreaterMap.set(InjectedStoreClass, selfRef.current)
+  return useMemo(() => {
+    let params = args
 
     if (typeof args === 'function') {
       params = args()
     }
-  }
-
-  const store = injector.get(InjectedStoreClass, scope, params)
-
-  useEffect(
-    () => () => {
-      if (storeCreaterMap.get(InjectedStoreClass) === selfRef.current && scope === 'session') {
-        storeCreaterMap.delete(InjectedStoreClass)
-        selfRef.current = null
-      }
-    },
-    []
-  )
-
-  return store
+    const injector = getInjector()
+    return injector.get(InjectedStoreClass, scope, params)
+  }, [pathname])
 }
+
+export default useInjection
