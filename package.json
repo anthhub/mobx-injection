@@ -64,7 +64,7 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 60,
+        "branches": 50,
         "functions": 60,
         "lines": 60,
         "statements": 60
@@ -88,10 +88,10 @@
   },
   "peerDependencies": {
     "react": "^16.8.0 || 16.9.0-alpha.0",
-    "react-dom": "^16.13.0",
     "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
+    "react-dom": "^16.13.0",
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
     "@testing-library/jest-dom": "^5.1.1",
